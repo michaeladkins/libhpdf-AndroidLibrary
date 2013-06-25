@@ -1187,3 +1187,50 @@ Java_org_libharu_PdfPage_textRect(JNIEnv *env, jobject obj, jfloat l, jfloat t, 
     /* Release (free) the native char array */
     (*env)->ReleaseStringUTFChars(env, textString, text);
 }
+
+/*
+ * Class:     org_libharu_PdfPage
+ * Method:    getFont
+ * Signature: (FFFFLjava/lang/String;I)V
+ */
+JNIEXPORT void JNICALL
+Java_org_libharu_PdfPage_getFont(JNIEnv *env, jobject obj, jstring fontNameString, jstring fontEncodingString) {
+    jint page;
+    const char* textFontName;
+    const char* textFontEncoding;
+
+    /* Get mHPDFPagePointer */
+    page = (*env)->GetIntField(env, obj, mHPDFPagePointer);
+
+    /* Get the text as a native char array */
+    textFontName = (*env)->GetStringUTFChars(env, fontNameString, NULL);
+    textFontEncoding = (*env)->GetStringUTFChars(env, fontEncodingString, NULL);
+
+    HPDF_GetFont((HPDF_Page) page, textFontName, textFontEncoding);
+
+    /* Release (free) the native char array */
+    (*env)->ReleaseStringUTFChars(env, fontNameString, textFontName);
+    (*env)->ReleaseStringUTFChars(env, fontEncodingString, textFontEncoding);
+}
+
+/*
+ * Class:     org_libharu_PdfPage
+ * Method:    setFontAndSize
+ * Signature: (FFFFLjava/lang/String;I)V
+ */
+JNIEXPORT void JNICALL
+Java_org_libharu_PdfPage_setFontAndSize(JNIEnv *env, jobject obj, jstring fontNameString, jstring fontEncodingString, jfloat fontSize) {
+    jint page;
+
+    /* Get mHPDFPagePointer */
+    page = (*env)->GetIntField(env, obj, mHPDFPagePointer);
+    /* Get the text as a native char array */
+    textFontName = (*env)->GetStringUTFChars(env, fontNameString, NULL);
+    textFontEncoding = (*env)->GetStringUTFChars(env, fontEncodingString, NULL);
+
+    HPDF_Page_SetFontAndSize((HPDF_Page) page, HPDF_GetFont((HPDF_Page) page, textFontName, textFontEncoding), (HPDF_REAL) fontSize);
+	
+    /* Release (free) the native char array */
+    (*env)->ReleaseStringUTFChars(env, fontNameString, textFontName);
+    (*env)->ReleaseStringUTFChars(env, fontEncodingString, textFontEncoding);
+}
